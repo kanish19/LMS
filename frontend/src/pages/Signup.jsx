@@ -13,8 +13,11 @@ export default function Signup() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/register', form);
-      alert('Account created! Please login.');
+      // Fixed: The backend route is /signup (or /admin-signup), not /register
+      const endpoint = form.role === 'admin' ? '/api/auth/admin-signup' : '/api/auth/signup';
+      await axios.post(`http://localhost:5000${endpoint}`, form);
+      
+      alert('Account created successfully! Please sign in.');
       navigate('/');
     } catch (err) {
       alert(err.response?.data?.message || 'Signup failed');
