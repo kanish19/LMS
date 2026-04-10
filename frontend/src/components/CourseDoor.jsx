@@ -44,7 +44,7 @@ export default function CourseDoor({ course, position, onEnter }) {
           color="white"
           anchorX="center"
           anchorY="middle"
-          font="https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff"
+          // Removed problematic font URL to use default Drei font (Roboto)
         >
           {course.title}
         </Text>
