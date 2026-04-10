@@ -1,10 +1,9 @@
-import { useFrame, useThree } from '@react-three/fiber';
+import { PointerLockControls } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 export default function PlayerControls() {
-  const { camera } = useThree();
-
   const keys = useRef({});
 
   useEffect(() => {
@@ -20,16 +19,24 @@ export default function PlayerControls() {
     };
   }, []);
 
-  useFrame(() => {
-    const speed = 0.15;
+  useFrame((state, delta) => {
+    const { camera } = state;
+    const moveSpeed = 10 * delta;
 
-    if (keys.current.w) camera.position.z -= speed;
-    if (keys.current.s) camera.position.z += speed;
-    if (keys.current.a) camera.position.x -= speed;
-    if (keys.current.d) camera.position.x += speed;
+    const direction = new THREE.Vector3();
+    const frontVector = new THREE.Vector3(0, 0, (keys.current.w ? 1 : 0) - (keys.current.s ? 1 : 0));
+    const sideVector = new THREE.Vector3((keys.current.a ? 1 : 0) - (keys.current.d ? 1 : 0), 0, 0);
 
-    camera.position.y = 2;
+    direction
+      .subVectors(frontVector, sideVector)
+      .normalize()
+      .multiplyScalar(moveSpeed)
+      .applyEuler(camera.rotation);
+
+    camera.position.x += direction.x;
+    camera.position.z += direction.z;
+    camera.position.y = 1.7; // Constant height
   });
 
-  return null;
+  return <PointerLockControls />;
 }
