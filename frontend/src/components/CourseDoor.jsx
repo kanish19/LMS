@@ -1,4 +1,4 @@
-import { Text, Float } from '@react-three/drei';
+import { Html, Float } from '@react-three/drei';
 import { useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -9,9 +9,8 @@ export default function CourseDoor({ course, position, onEnter }) {
 
   useFrame((state) => {
     const { camera } = state;
-    const distance = camera.position.distanceTo(new THREE.Vector3(...position));
-    
     // Proximity detection
+    const distance = camera.position.distanceTo(new THREE.Vector3(...position));
     if (distance < 3) {
       onEnter(course);
     }
@@ -36,30 +35,43 @@ export default function CourseDoor({ course, position, onEnter }) {
         <meshStandardMaterial color={hovered ? '#00ffff' : '#222'} />
       </mesh>
 
-      {/* Course Title Sign */}
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-        <Text
-          position={[0, 3, 0.2]}
-          fontSize={0.3}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          // Removed problematic font URL to use default Drei font (Roboto)
-        >
-          {course.title}
-        </Text>
-      </Float>
+      {/* Course Title Label (Standard HTML - No font errors!) */}
+      <group position={[0, 3, 0.2]}>
+        <Html center distanceFactor={10} transform>
+          <div style={{
+            background: 'rgba(0,0,0,0.8)',
+            padding: '5px 15px',
+            borderRadius: '8px',
+            border: '1px solid #00ffff',
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            fontFamily: 'sans-serif',
+            textAlign: 'center'
+          }}>
+            {course.title}
+          </div>
+        </Html>
+      </group>
 
-      {/* Instruction */}
+      {/* Instruction Label (Standard HTML) */}
       {hovered && (
-        <Text
-          position={[0, 0.5, 0.5]}
-          fontSize={0.15}
-          color="#00ffff"
-          anchorX="center"
-        >
-          Walk closer to enter
-        </Text>
+        <group position={[0, 0.5, 0.5]}>
+          <Html center distanceFactor={10}>
+            <div style={{
+              color: '#00ffff',
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              whiteSpace: 'nowrap',
+              pointerEvents: 'none',
+              fontFamily: 'sans-serif'
+            }}>
+              Walk closer to enter
+            </div>
+          </Html>
+        </group>
       )}
     </group>
   );

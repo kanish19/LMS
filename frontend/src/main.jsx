@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
+import './index.css';
 
 // --- CLEAN CONSOLE PATCH ---
 // These specific warnings are from internal libraries and do not affect the app.
@@ -9,12 +10,14 @@ const originalWarn = console.warn;
 const originalError = console.error;
 
 console.warn = (...args) => {
-  if (args[0]?.includes?.('THREE.THREE.Clock: This module has been deprecated')) return;
+  const msg = args.map(String).join(' ');
+  if (msg.includes('THREE.Clock') || msg.includes('deprecated')) return;
   originalWarn(...args);
 };
 
 console.error = (...args) => {
-  if (args[0]?.includes?.('Failure loading font')) return;
+  const msg = args.map(String).join(' ');
+  if (msg.includes('Failure loading font') || msg.includes('gstatic')) return;
   originalError(...args);
 };
 // ----------------------------

@@ -13,11 +13,13 @@ const router = express.Router();
  */
 router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
 
     const course = await Course.create({
       title,
-      description
+      description,
+      category,
+      createdBy: req.user.id
     });
 
     res.status(201).json({

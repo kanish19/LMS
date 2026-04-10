@@ -1,9 +1,9 @@
-import CampusScene from '../components/CampusScene';
+import Dashboard from './Dashboard';
 
 export default function Campus() {
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <CampusScene />
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+      <Dashboard />
     </div>
   );
 }

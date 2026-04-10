@@ -1,24 +1,27 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { authAPI } from '../api/api';
+import LineWaves from '../components/LineWaves';
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
+      const res = await authAPI.login(form);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate('/campus');
     } catch (err) {
-      alert(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -27,94 +30,100 @@ export default function Login() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'radial-gradient(circle at top right, #0f172a, #020617)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      fontFamily: "'Outfit', sans-serif",
-      color: 'white'
+      padding: '20px',
+      position: 'relative',
+      background: '#0a0a0a',
+      overflow: 'hidden'
     }}>
+      <LineWaves 
+        color1="#2e7d32" 
+        color2="#4caf50" 
+        color3="#1b5e20" 
+        brightness={0.15} 
+        speed={0.2} 
+        innerLineCount={25}
+        outerLineCount={30}
+      />
       <div style={{
-        background: 'rgba(255, 255, 255, 0.03)',
-        padding: '60px',
-        borderRadius: '32px',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'rgba(255, 255, 255, 0.95)',
+        padding: '40px',
+        borderRadius: '24px',
         width: '100%',
-        maxWidth: '450px',
-        textAlign: 'center',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)'
+        maxWidth: '400px',
+        boxShadow: 'var(--shadow-lg)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        position: 'relative',
+        zIndex: 1,
+        backdropFilter: 'blur(10px)'
       }}>
-        <h1 style={{ 
-          fontSize: '3rem', 
-          fontWeight: '900', 
-          marginBottom: '10px',
-          background: 'linear-gradient(to right, #22d3ee, #818cf8)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>
-          OmniLMS
-        </h1>
-        <p style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '40px' }}>Enter the future of learning.</p>
+        <h1 style={{ textAlign: 'center', marginBottom: '10px' }}>Simple LMS</h1>
+        <p style={{ textAlign: 'center', color: 'var(--text-dim)', marginBottom: '30px' }}>
+          Welcome back! Please sign in.
+        </p>
+
+        {error && (
+          <div style={{
+            padding: '12px',
+            backgroundColor: '#ffebee',
+            color: 'var(--error)',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            fontSize: '0.9rem',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <input
-            name="email"
-            type="email"
-            placeholder="Email Address"
-            required
-            onChange={handleChange}
-            style={{
-              padding: '15px 20px',
-              borderRadius: '16px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: 'white',
-              fontSize: '1rem',
-              outline: 'none'
-            }}
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            required
-            onChange={handleChange}
-            style={{
-              padding: '15px 20px',
-              borderRadius: '16px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: 'white',
-              fontSize: '1rem',
-              outline: 'none'
-            }}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontSize: '0.9rem', fontWeight: '600' }}>Email Address</label>
+            <input
+              name="email"
+              type="email"
+              placeholder="name@example.com"
+              required
+              onChange={handleChange}
+              value={form.email}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontSize: '0.9rem', fontWeight: '600' }}>Password</label>
+            <input
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              required
+              onChange={handleChange}
+              value={form.password}
+            />
+          </div>
+
           <button 
             type="submit"
             disabled={loading}
             style={{
               marginTop: '10px',
-              padding: '16px',
-              borderRadius: '16px',
+              padding: '12px',
+              borderRadius: '8px',
               border: 'none',
-              background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+              background: 'var(--primary)',
               color: 'white',
-              fontSize: '1.2rem',
+              fontSize: '1rem',
               fontWeight: '700',
-              cursor: 'pointer',
-              boxShadow: '0 10px 20px -5px rgba(6, 182, 212, 0.5)',
-              transition: 'transform 0.2s'
+              boxShadow: '0 4px 6px rgba(46, 125, 50, 0.2)'
             }}
-            onMouseOver={(e) => e.target.style.transform = 'scale(1.02)'}
-            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
           >
-            {loading ? 'Authenticating...' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <p style={{ marginTop: '30px', color: 'rgba(255,255,255,0.6)' }}>
-          New here? <Link to="/signup" style={{ color: '#22d3ee', textDecoration: 'none', fontWeight: 'bold' }}>Create Account</Link>
+        <p style={{ marginTop: '30px', textAlign: 'center', color: 'var(--text-dim)' }}>
+          Don't have an account? <Link to="/signup" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Create Account</Link>
         </p>
       </div>
     </div>

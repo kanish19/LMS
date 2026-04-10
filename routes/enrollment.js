@@ -2,6 +2,7 @@ const express = require('express');
 const Enrollment = require('../models/Enrollment');
 const Course = require('../models/Course');
 const authMiddleware = require('../middleware/authMiddleware');
+const adminMiddleware = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 
@@ -9,10 +10,17 @@ const router = express.Router();
  * @swagger
  * /api/enrollments/{courseId}:
  *   post:
- *     summary: Enroll in a course
+ *     summary: Enroll in a course (Students only)
  */
 router.post('/:courseId', authMiddleware, async (req, res) => {
   try {
+    // Role check: Block admins from enrolling
+    if (req.user.role === 'admin') {
+      return res.status(403).json({
+        message: 'Admins cannot enroll in courses.'
+      });
+    }
+
     const course = await Course.findById(req.params.courseId);
 
     if (!course) {
@@ -61,6 +69,24 @@ router.get('/my-courses', authMiddleware, async (req, res) => {
 
     res.json(enrollments);
 
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /api/enrollments/admin/course/{courseId}:
+ *   get:
+ *     summary: Admin view all students enrolled in a course
+ */
+router.get('/admin/course/:courseId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const enrollments = await Enrollment.find({
+      course: req.params.courseId
+    }).populate('user', 'name email');
+
+    res.json(enrollments);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
