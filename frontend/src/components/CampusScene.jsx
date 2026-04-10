@@ -11,6 +11,7 @@ export default function CampusScene() {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function CampusScene() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching courses:', err);
+        setError('Failed to load courses. Please check if the backend is running and MongoDB is connected.');
         setLoading(false);
       }
     };
@@ -42,7 +44,7 @@ export default function CampusScene() {
       <Canvas camera={{ position: [0, 1.7, 10], fov: 75 }}>
         <Hallway />
         
-        {!loading && courses.map((course, index) => {
+        {!loading && !error && courses.map((course, index) => {
           const side = index % 2 === 0 ? -1 : 1;
           const zPos = -index * 10 + 5;
           const xPos = 4.8 * side;
@@ -134,6 +136,16 @@ export default function CampusScene() {
         <div style={{ marginBottom: '5px', fontWeight: 'bold', color: '#00ffff' }}>CONTROLS</div>
         <div>WASD to walk. Click to lock mouse view.</div>
         <div>ESC to unlock mouse. Walk into a door to enter.</div>
+        {error && (
+          <div style={{ marginTop: '10px', color: '#f87171', fontWeight: 'bold' }}>
+            ⚠️ {error}
+          </div>
+        )}
+        {!loading && !error && courses.length === 0 && (
+          <div style={{ marginTop: '10px', color: '#fbbf24', fontWeight: 'bold' }}>
+            📭 No courses found. Use Admin Dashboard to add some!
+          </div>
+        )}
       </div>
 
       {/* Course Details Overlay */}
