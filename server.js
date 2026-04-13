@@ -10,7 +10,7 @@ dotenv.config();
 const authRoutes = require('./routes/auth');
 const courseRoutes = require('./routes/course');
 const enrollmentRoutes = require('./routes/enrollment');
-const userRoutes = require('./routes/User');
+const userRoutes = require("./routes/user")
 const swaggerSetup = require('./swagger');
 
 const app = express();
