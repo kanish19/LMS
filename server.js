@@ -10,7 +10,7 @@ dotenv.config();
 const authRoutes = require('./routes/auth');
 const courseRoutes = require('./routes/course');
 const enrollmentRoutes = require('./routes/enrollment');
-const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/User');
 const swaggerSetup = require('./swagger');
 
 const app = express();
@@ -25,7 +25,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/user', userRoutes);
 
 // Swagger
 swaggerSetup(app);
