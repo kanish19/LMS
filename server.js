@@ -7,34 +7,50 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+/* =========================
+   Middleware
+========================= */
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Routes
+/* =========================
+   Routes
+========================= */
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/courses', require('./routes/course'));
 app.use('/api/enrollments', require('./routes/enrollment'));
 app.use('/api/user', require('./routes/user'));
+app.use('/api/ai', require('./routes/ai')); // ✅ AI ROUTE
 
-// Swagger
+/* =========================
+   Swagger
+========================= */
 require('./swagger')(app);
 
-// Test route
+/* =========================
+   Test Route
+========================= */
 app.get('/', (req, res) => {
   res.send('Immersive LMS Backend is running 🚀');
 });
 
+/* =========================
+   Config
+========================= */
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
-// ❌ Stop if no DB URL
+/* =========================
+   Safety Check
+========================= */
 if (!MONGO_URI) {
   console.error("❌ MONGO_URI missing");
   process.exit(1);
 }
 
-// Start server
+/* =========================
+   Start Server
+========================= */
 const start = async () => {
   try {
     console.log("Connecting to DB...");
