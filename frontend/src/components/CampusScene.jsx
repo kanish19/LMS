@@ -17,7 +17,7 @@ export default function CampusScene() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/courses');
+        const res = await axios.getaxios.get("https://lms-yyu4.onrender.com/...")
         setCourses(res.data);
         setLoading(false);
       } catch (err) {
