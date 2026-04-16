@@ -4,12 +4,14 @@ const API = axios.create({
   baseURL: "https://lms-yyu4.onrender.com/api",
 });
 
-// 🔐 Attach token
+// 🔐 Attach token automatically
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
