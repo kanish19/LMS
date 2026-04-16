@@ -7,55 +7,34 @@ dotenv.config();
 
 const app = express();
 
-/* =========================
-   Middleware
-========================= */
-app.use(cors({ origin: '*' }));
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-/* =========================
-   Routes
-========================= */
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/courses', require('./routes/course'));
 app.use('/api/enrollments', require('./routes/enrollment'));
 app.use('/api/user', require('./routes/user'));
-app.use('/api/ai', require('./routes/ai')); // ✅ AI ROUTE
+app.use('/api/ai', require('./routes/ai')); // ✅ AI
 
-/* =========================
-   Swagger
-========================= */
-require('./swagger')(app);
-
-/* =========================
-   Test Route
-========================= */
+// Test route
 app.get('/', (req, res) => {
   res.send('Immersive LMS Backend is running 🚀');
 });
 
-/* =========================
-   Config
-========================= */
+// Config
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
-/* =========================
-   Safety Check
-========================= */
 if (!MONGO_URI) {
   console.error("❌ MONGO_URI missing");
   process.exit(1);
 }
 
-/* =========================
-   Start Server
-========================= */
 const start = async () => {
   try {
-    console.log("Connecting to DB...");
     await mongoose.connect(MONGO_URI);
-
     console.log("MongoDB connected ✅");
 
     app.listen(PORT, () => {
@@ -63,7 +42,7 @@ const start = async () => {
     });
 
   } catch (err) {
-    console.error("❌ DB Error:", err.message);
+    console.error("DB ERROR:", err);
     process.exit(1);
   }
 };
