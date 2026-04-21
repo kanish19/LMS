@@ -2,51 +2,47 @@ const express = require("express");
 const router = express.Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// 🔑 Initialize AI
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+// 🔑 Load API key from environment
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// 🔥 TEST ROUTE (optional but useful)
-router.get("/", (req, res) => {
-  res.send("AI route working ✅");
-});
-
-// 🤖 AI ASK ROUTE
+// ✅ AI Route
 router.post("/ask", async (req, res) => {
   try {
     const { prompt } = req.body;
 
-    // ✅ Validate input
+    // ❌ safety check
     if (!prompt) {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
-    // 🔍 Debug logs
     console.log("Prompt:", prompt);
-    console.log("API KEY:", process.env.GOOGLE_API_KEY ? "Loaded ✅" : "Missing ❌");
+    console.log(
+      "API KEY:",
+      process.env.GEMINI_API_KEY ? "Loaded ✅" : "Missing ❌"
+    );
 
-    // ✅ Model
+    // ✅ CORRECT MODEL
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-latest",
     });
 
-    // ✅ Generate response
+    // ✅ Correct request format
     const result = await model.generateContent({
       contents: [{ parts: [{ text: prompt }] }],
     });
 
     const response = result.response;
-    const text = response.text();
 
-    console.log("AI Response:", text);
-
-    res.json({ reply: text });
+    res.json({
+      reply: response.text(),
+    });
 
   } catch (err) {
-    // 🔥 SHOW FULL ERROR (VERY IMPORTANT)
     console.error("🔥 REAL AI ERROR:", err);
 
     res.status(500).json({
-      error: err.message || "Unknown error",
+      error: "AI failed",
+      details: err.message,
     });
   }
 });

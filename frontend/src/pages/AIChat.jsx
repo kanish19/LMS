@@ -28,7 +28,7 @@ export default function AIChat() {
 
       <br /><br />
 
-      <button onClick={askAI} style={{ padding: "10px 20px" }}>
+      <button onClick={askAI}>
         Ask AI 🚀
       </button>
 

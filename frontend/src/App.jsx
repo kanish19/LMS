@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Campus from "./pages/Campus";
 import Admin from "./pages/Admin";
-import AIChat from "./pages/AIChat"; // ✅ IMPORTANT
+import AIChat from "./pages/AIChat";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/campus" element={<Campus />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/ai" element={<AIChat />} /> {/* ✅ AI PAGE */}
+        <Route path="/ai" element={<AIChat />} />
       </Routes>
     </BrowserRouter>
   );
